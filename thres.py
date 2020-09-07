@@ -1,9 +1,6 @@
 import cv2
 cap = cv2.VideoCapture(0)
 
-# windowName = "Live"
-# cv2.namedWindow(windowName, cv2.WINDOW_NORMAL)
-# cv2.setWindowProperty(windowName,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
 while True:
     ret, img = cap.read()
