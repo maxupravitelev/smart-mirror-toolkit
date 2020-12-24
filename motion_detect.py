@@ -17,13 +17,21 @@ while True:
     threshold=cv2.threshold(delta, 30, 255, cv2.THRESH_BINARY)[1]
     (contours,_)=cv2.findContours(threshold,cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    cv2.rectangle(frame, (0,0), (800,600), (0,0,0), -1) 
+
+
     for contour in contours:
-        if cv2.contourArea(contour) < 5000:
+        if cv2.contourArea(contour) < 8000:
             continue
         (x, y, w, h)=cv2.boundingRect(contour)
         cv2.rectangle(frame, (x, y), (x+w, y+h), (255,255,255), 10)
     
     #cv2.imshow("Color Frame",frame)
+#    image = cv2.rectangle(image, start_point, end_point, color, thickness) 
+
+    # image = cv2.rectangle(frame, (0,0), (600,), (0,0,0), -1)
+    # cv2.imshow('Video feed', image)
+
     cv2.namedWindow('Video feed', cv2.WINDOW_FREERATIO)
     cv2.setWindowProperty('Video feed', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
     cv2.imshow('Video feed', cv2.flip(frame, 1))
