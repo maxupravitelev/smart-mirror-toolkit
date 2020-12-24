@@ -4,6 +4,8 @@ import numpy as np
 import time
 
 URL = "http://192.168.178.24:8080/shot.jpg"
+# URL = "http://192.168.178.24:8080/video?submenu=mjpg"
+
 
 while True:
     img_arr = np.array(

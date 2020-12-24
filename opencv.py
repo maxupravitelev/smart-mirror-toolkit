@@ -1,17 +1,12 @@
-# https://www.youtube.com/watch?v=1FJWXOO1SRI
-
-# pip install opencv-python
-# sudo pip install opencv-contrib-python
-
 import cv2
 
 cap = cv2.VideoCapture(0)
 
 tracker = cv2.TrackerMOSSE_create() # speed yay, accuracy low
-tracker = cv2.TrackerCRST_create()  # speed low, accuracy yay
+# tracker = cv2.TrackerCRST_create()  # speed low, accuracy yay
 
 success, img = cap.read()
-bbox = cv2.selectROI("Tracking", img, False) ## bbox => bounding box
+bbox = cv2.selectROI("Tracking", img, False) 
 tracker.init(img,bbox)
 
 def drawBox(img,bbox):
