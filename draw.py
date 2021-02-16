@@ -6,10 +6,18 @@ cap = cv2.VideoCapture(0)
 # Set camera resolution
 cap.set(3, 480)
 cap.set(4, 320)
-_, frame = cap.read()
-rows, cols, _ = frame.shape
 
-x_medium = int(cols / 2)
+
+_, black_frame = cap.read()
+# cv2.rectangle(black_frame, (0, 0), (1, 1), (255, 0, 0), 2)
+
+frame_width = int(cap.get(3)) 
+frame_height = int(cap.get(4))
+print(frame_width)
+print(frame_height)
+
+cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+
 
 while True:
     _, frame = cap.read()
@@ -30,14 +38,13 @@ while True:
     for cnt in contours:
         # if cv2.contourArea(cnt) > 1000:
             (x, y, w, h) = cv2.boundingRect(cnt)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+            cv2.rectangle(black_frame, (x, y), (x, y), (0, 255, 0), 3)
 
-            x_medium = int((x + x + w) / 2)
 
             break
 
 
-    cv2.imshow("Frame", frame)
+    cv2.imshow("Frame", black_frame)
     key = cv2.waitKey(1)
     
     if key == 27:
