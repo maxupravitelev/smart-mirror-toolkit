@@ -1,5 +1,14 @@
 import cv2
 import numpy as np
+import time
+
+
+gpio_motor = True
+
+if gpio_motor == True:
+    from modules.gpio_motor import GPIO_motor
+    motor = GPIO_motor()
+
 
 
 cap = cv2.VideoCapture(0)
@@ -11,6 +20,7 @@ rows, cols, _ = frame.shape
 
 x_medium = int(cols / 2)
 
+last_x_medium = int(cols / 2)
 
 while True:
     _, frame = cap.read()
@@ -29,12 +39,27 @@ while True:
     contours = sorted(contours, key=lambda x:cv2.contourArea(x), reverse=True)
 
     for cnt in contours:
+        if cv2.contourArea(cnt) > 1000:
             (x, y, w, h) = cv2.boundingRect(cnt)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
-            
+            last_x_medium = x_medium
             x_medium = int((x + x + w) / 2)
+
+            if last_x_medium > x_medium:
+                print("left")
+                motor.move_non_threaded(1, "left")
+                #time.sleep(0.1)
+            elif last_x_medium == x_medium:
+                print("stay")
+            else:
+                print("right")
+                motor.move_non_threaded(1, "right")
+                #time.sleep(0.1)
+
+
             break
-    
+
+
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1)
     
