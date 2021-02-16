@@ -10,18 +10,32 @@ cap.set(4, 768)
 
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+_, black_frame = cap.read()
+# cv2.rectangle(black_frame, (0, 0), (1, 1), (255, 0, 0), 2)
+
+frame_width = int(cap.get(3)) 
+frame_height = int(cap.get(4))
+print(frame_width)
+print(frame_height)
 
 while True:
     _, frame = cap.read()
  
+    frame = cv2.flip(frame, 1)
+
+    cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 10)
 
+    #cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
+    #cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+ 
     for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        cv2.rectangle(black_frame, (x, y), (x+w, y+h), (255, 255, 255), 5)
 
-    cv2.imshow("Frame", frame)
+    cv2.imshow("frame", black_frame)
     key = cv2.waitKey(1)
     
     if key == 27:
