@@ -4,26 +4,28 @@ import time
 
 
 gpio_motor = True
-
 if gpio_motor == True:
     from modules.gpio_motor import GPIO_motor
     motor = GPIO_motor()
 
+camera_mode = "webcam"
+# init videostream (separate thread)
+if camera_mode == "webcam":
+    from modules.cam import VideoStream
+    #cap = VideoStream(src=0, resolution=(frame_width,frame_height)).start()
+    cap = VideoStream(src=0).start()
+else: 
+    from modules.PiCam import PiCam 
+    cap = PiCam().start()
 
+time.sleep(0.5)
+frame = cap.read()
+frame_width = frame.shape[0]
 
-cap = cv2.VideoCapture(0)
-# Set camera resolution
-cap.set(3, 480)
-cap.set(4, 320)
-_, frame = cap.read()
-rows, cols, _ = frame.shape
-
-x_medium = int(cols / 2)
-
-last_x_medium = int(cols / 2)
+x_medium = int(frame_width / 2)
 
 while True:
-    _, frame = cap.read()
+    frame = cap.read()
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
     # red color
