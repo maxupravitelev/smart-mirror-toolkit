@@ -2,17 +2,22 @@ import cv2
 import numpy as np
 import time
 
-
 gpio_motor = True
 if gpio_motor == True:
     from modules.gpio_motor import GPIO_motor
     motor = GPIO_motor()
 
-camera_mode = "webcam"
+camera_mode = "picam"
+
 # init videostream (separate thread)
 if camera_mode == "webcam":
+
+    # start raspivid in a subprocess
+    import subprocess
+    cmd = "raspivid -n -t 0 -n  -w 1024 -h 768  -ih -fl -l -o - | /bin/nc -lvp 5000"
+    subprocess.Popen(cmd, shell=True)
     from modules.cam import VideoStream
-    #cap = VideoStream(src=0, resolution=(frame_width,frame_height)).start()
+    time.sleep(2)
     cap = VideoStream(src=0).start()
 else: 
     from modules.PiCam import PiCam 
