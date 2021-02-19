@@ -1,11 +1,11 @@
 import cv2
 import numpy as np
-
+import time
 
 cap = cv2.VideoCapture(0)
 # Set camera resolution
-cap.set(3, 480)
-cap.set(4, 320)
+# cap.set(3, 480)
+# cap.set(4, 320)
 
 
 _, black_frame = cap.read()
@@ -15,8 +15,21 @@ frame_height = int(cap.get(4))
 print(frame_width)
 print(frame_height)
 
-cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+reset_area_width = 50
+reset_area_height = 50
 
+save_area_width = 50
+save_area_height = 50
+save_area_y = frame_height - 50
+print(save_area_y)
+def reset_canvas():
+    cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+    cv2.rectangle(black_frame, (0, 0), (reset_area_width, reset_area_height), (10, 10, 10), -1)
+    cv2.rectangle(black_frame, (0, save_area_y), (save_area_width, save_area_y + save_area_height), (20, 20, 20), -1)
+
+reset_canvas()
+
+counter = 0
 
 while True:
     _, frame = cap.read()
@@ -41,8 +54,19 @@ while True:
             radius = int(w / 10)
             cv2.circle(black_frame, (x, y), radius, (255, 255, 255), -1)
 
+            if x < reset_area_width and y < reset_area_height:
+                reset_canvas()
+                time.sleep(1)
+
+            if x < save_area_width and y > save_area_width:
+                counter += 1
+                localPath = 'images/image1000'+str(counter)+'.jpg'
+                cv2.imwrite(localPath,black_frame)
+                time.sleep(1)
 
             break
+
+            
 
 
     cv2.imshow("Frame", black_frame)
