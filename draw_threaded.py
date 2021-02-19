@@ -57,6 +57,24 @@ painter = Painter(black_frame).start()
 if enable_fps_timer == True:
     timer2 = time.time()
 
+
+
+reset_area_width = 50
+reset_area_height = 50
+
+save_area_width = 50
+save_area_height = 50
+save_area_y = frame_height - 50
+
+def reset_canvas():
+    cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+    cv2.rectangle(black_frame, (0, 0), (reset_area_width, reset_area_height), (10, 10, 10), -1)
+    cv2.rectangle(black_frame, (0, save_area_y), (save_area_width, save_area_y + save_area_height), (20, 20, 20), -1)
+
+reset_canvas()
+
+counter = 0
+
 while True:
 
 
@@ -69,6 +87,18 @@ while True:
     painter.frame = frame
     
     cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
+
+
+    if painter.brush_x < reset_area_width and painter.brush_y < reset_area_height:
+        reset_canvas()
+        time.sleep(1)
+
+    if painter.brush_x < save_area_width and painter.brush_y > save_area_width:
+        counter += 1
+        localPath = 'images/image1000'+str(counter)+'.jpg'
+        cv2.imwrite(localPath,black_frame)
+        time.sleep(1)
+
 
     if enable_fps_timer == True:
         print("FPS: " + str(1/((timer1-timer2))))
