@@ -11,7 +11,7 @@ from utils.boolcheck import boolcheck
 class Painter:
     def __init__(self, frame):
         
-        # set setting from config file
+        # get settings from config file
         config_path = 'config/config.json'
 
         with open(config_path) as config_file:
@@ -33,10 +33,10 @@ class Painter:
         self.brush_y = 0
         
     def start(self):    
-        Thread(target=self.analyze, args=()).start()
+        Thread(target=self.paint, args=()).start()
         return self    
 
-    def analyze(self):
+    def paint(self):
         while not self.stopped:
 
             # Source for color detection: # https://pysource.com/2019/06/05/control-webcam-with-servo-motor-and-raspberry-pi-opencv-with-python/ 

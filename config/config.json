@@ -23,7 +23,7 @@
         "create_buffer": "true",
         "debug_mode": "false",
         "draw_bbox": "false",
-        "enable_fps_timer": "false",
+        "enable_fps_timer": "true",
         "stream_url": "tcp://0.0.0.0:5000",
         "stream_via_url": "true",
         "verbose": "true"
