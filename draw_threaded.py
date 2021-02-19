@@ -37,16 +37,23 @@ enable_fps_timer = boolcheck(config["general_config"]["enable_fps_timer"])
 
 cap = cv2.VideoCapture(0)
 # # Set camera resolution
-cap.set(3, 640)
-cap.set(4, 480)
+
+cap_width = 480
+cap_height = 320
+cap.set(3, cap_width)
+cap.set(4, cap_height)
 
 
 time.sleep(1.0)
-_, black_frame = cap.read()
-# cv2.rectangle(black_frame, (0, 0), (1, 1), (255, 0, 0), 2)
+#_, black_frame = cap.read()
 
-frame_width = int(black_frame.shape[1]) 
-frame_height = int(black_frame.shape[0])
+frame_width = 1024
+frame_height = 768
+
+resize_width_factor = frame_width / cap_width
+resize_heigth_factor = frame_height / cap_height
+
+black_frame = np.zeros((frame_height, frame_width, 3), np.uint8)
 print(frame_width)
 print(frame_height)
 
@@ -85,15 +92,20 @@ while True:
     frame = cv2.flip(frame, 1)
 
     painter.frame = frame
-    
-    cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
 
+    brush_x = int(painter.brush_x * resize_width_factor)
+    brush_y = int(painter.brush_y * resize_heigth_factor)
+    brush_radius = int(painter.brush_radius * resize_width_factor)
 
-    if painter.brush_x < reset_area_width and painter.brush_y < reset_area_height:
+    cv2.circle(black_frame, (brush_x, brush_y), brush_radius, (255, 255, 255), -1)
+
+    print(brush_x)
+
+    if brush_x < reset_area_width and brush_y < reset_area_height:
         reset_canvas()
         time.sleep(1)
 
-    if painter.brush_x < save_area_width and painter.brush_y > save_area_width:
+    if brush_x < save_area_width and brush_y > save_area_y:
         counter += 1
         localPath = 'images/image1000'+str(counter)+'.jpg'
         cv2.imwrite(localPath,black_frame)

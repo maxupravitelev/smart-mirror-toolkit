@@ -58,7 +58,7 @@ while True:
                 reset_canvas()
                 time.sleep(1)
 
-            if x < save_area_width and y > save_area_width:
+            if x < save_area_width and y > save_area_y:
                 counter += 1
                 localPath = 'images/image1000'+str(counter)+'.jpg'
                 cv2.imwrite(localPath,black_frame)
