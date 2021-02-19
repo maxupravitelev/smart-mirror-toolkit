@@ -31,6 +31,7 @@ class Painter:
 
         self.brush_x = 0
         self.brush_y = 0
+        self.brush_radius = 0
         
     def start(self):    
         Thread(target=self.paint, args=()).start()
@@ -48,20 +49,17 @@ class Painter:
 
             for cnt in contours:
                 # if cv2.contourArea(cnt) > 1000:
-                    (x, y, _, _) = cv2.boundingRect(cnt)
+                    (x, y, w, _) = cv2.boundingRect(cnt)
                     self.brush_x = x
                     self.brush_y = y
+                    self.brush_radius = int(w / 10)
 
                     break
 
-            if cv2.waitKey(1) == ord("q"):
-                if self.verbose == True:
-                    print("painter stopped")
-                self.stopped = True
-
-    def set_background(self, image):
-        self.background_image = imutils.resize(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), self.resize_width)
-        self.motion_detected = False
+            # if cv2.waitKey(1) == ord("q"):
+            #     if self.verbose == True:
+            #         print("painter stopped")
+            #     self.stopped = True
 
     def stop(self):
         self.stopped = True

@@ -21,7 +21,7 @@ reset_area_height = 50
 save_area_width = 50
 save_area_height = 50
 save_area_y = frame_height - 50
-print(save_area_y)
+
 def reset_canvas():
     cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
     cv2.rectangle(black_frame, (0, 0), (reset_area_width, reset_area_height), (10, 10, 10), -1)
@@ -65,9 +65,6 @@ while True:
                 time.sleep(1)
 
             break
-
-            
-
 
     cv2.imshow("Frame", black_frame)
     key = cv2.waitKey(1)

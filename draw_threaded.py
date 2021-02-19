@@ -68,7 +68,7 @@ while True:
 
     painter.frame = frame
     
-    cv2.circle(black_frame, (painter.brush_x, painter.brush_y), 5, (255, 255, 255), 5)
+    cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
 
     if enable_fps_timer == True:
         print("FPS: " + str(1/((timer1-timer2))))
