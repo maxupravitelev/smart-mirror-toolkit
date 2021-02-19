@@ -6,7 +6,7 @@ from threading import Thread
 # import cv2
 
 # import numpy as np
-
+import json
 
 
 class PiCam:
@@ -20,10 +20,29 @@ class PiCam:
         # init thread
         self.stopped = False
 
+        # init check to identify duplicate frames
+        self.frame_count = 0
+
+        config_path = 'config/config.json'
+
+        with open(config_path) as config_file:
+            config = json.load(config_file)
+
         self.camera = PiCamera() 
 
         # set resolution
-        #self.camera.resolution = (1024, 768)
+        resolution = config["picam_config"]["resolution"]["set"]
+        self.camera.resolution = (resolution[0], resolution[1])
+        #print(self.camera.resolution)
+        
+        # set picamera setting
+        # picamera settings https://picamera.readthedocs.io/en/release-1.10/api_camera.html
+        self.camera.framerate = config["picam_config"]["framerate"]
+        self.camera.awb_mode = config["picam_config"]["awb_mode"]
+        self.camera.awb_gains = config["picam_config"]["awb_gains"]
+        self.camera.exposure_mode = config["picam_config"]["exposure_mode"]
+        self.camera.image_effect = config["picam_config"]["image_effect"]["set"]
+        #print(self.camera.image_effect)
         
         self.rawCapture = PiRGBArray(self.camera, size=resolution)
         self.stream = self.camera.capture_continuous(self.rawCapture,
@@ -55,6 +74,13 @@ class PiCam:
             # grab the frame from the stream and clear the stream in
             # preparation for the next frame
             self.frame = f.array
+
+            # set to check if frame was updated in main thread 
+            if self.frame_count < 1000:
+                self.frame_count += 1
+            else:
+                # reset counter
+                self.frame_count = 0
 
             self.rawCapture.truncate(0)
 

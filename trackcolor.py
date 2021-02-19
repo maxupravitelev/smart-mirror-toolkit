@@ -36,7 +36,7 @@ while True:
     # red color
     # low_red = np.array([161, 155, 84])
     # high_red = np.array([179, 255, 255])
-    low_red = np.array([161, 60, 84])
+    low_red = np.array([161, 155, 84])
     high_red = np.array([179, 255, 255])
 #     low_red = np.array([0, 0, 0])
 #     high_red = np.array([20, 20, 20])
