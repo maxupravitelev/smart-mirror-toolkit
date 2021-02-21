@@ -99,8 +99,6 @@ while True:
 
     cv2.circle(black_frame, (brush_x, brush_y), brush_radius, (255, 255, 255), -1)
 
-    print(brush_x)
-
     if brush_x < reset_area_width and brush_y < reset_area_height:
         reset_canvas()
         time.sleep(1)

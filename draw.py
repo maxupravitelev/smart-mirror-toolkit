@@ -7,11 +7,26 @@ cap = cv2.VideoCapture(0)
 # cap.set(3, 480)
 # cap.set(4, 320)
 
+cap_width = 480
+cap_height = 320
+cap.set(3, cap_width)
+cap.set(4, cap_height)
 
-_, black_frame = cap.read()
+# _, black_frame = cap.read()
 
-frame_width = int(cap.get(3)) 
-frame_height = int(cap.get(4))
+# frame_width = int(cap.get(3)) 
+# frame_height = int(cap.get(4))
+# print(frame_width)
+# print(frame_height)
+
+
+frame_width = 1024
+frame_height = 768
+
+resize_width_factor = frame_width / cap_width
+resize_heigth_factor = frame_height / cap_height
+
+black_frame = np.zeros((frame_height, frame_width, 3), np.uint8)
 print(frame_width)
 print(frame_height)
 
@@ -31,34 +46,38 @@ reset_canvas()
 
 counter = 0
 
+# red color
+low_red = np.array([161, 155, 84])
+high_red = np.array([179, 255, 255])
+
+#     low_red = np.array([0, 0, 0])
+#     high_red = np.array([20, 20, 20])
+
 while True:
     _, frame = cap.read()
     frame = cv2.flip(frame, 1)
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     
-    # red color
-    low_red = np.array([161, 155, 84])
-    high_red = np.array([179, 255, 255])
-
-#     low_red = np.array([0, 0, 0])
-#     high_red = np.array([20, 20, 20])
-
     red_mask = cv2.inRange(hsv_frame, low_red, high_red)
     # print(red_mask)
     contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     contours = sorted(contours, key=lambda x:cv2.contourArea(x), reverse=True)
 
+
+
     for cnt in contours:
         # if cv2.contourArea(cnt) > 1000:
             (x, y, w, h) = cv2.boundingRect(cnt)
             radius = int(w / 10)
-            cv2.circle(black_frame, (x, y), radius, (255, 255, 255), -1)
+            brush_x = int(x * resize_width_factor)
+            brush_y = int(y * resize_heigth_factor)
+            cv2.circle(black_frame, (brush_x, brush_y), radius, (255, 255, 255), -1)
 
-            if x < reset_area_width and y < reset_area_height:
+            if brush_x < reset_area_width and brush_y < reset_area_height:
                 reset_canvas()
                 time.sleep(1)
 
-            if x < save_area_width and y > save_area_y:
+            if brush_x < save_area_width and brush_y > save_area_y:
                 counter += 1
                 localPath = 'images/image1000'+str(counter)+'.jpg'
                 cv2.imwrite(localPath,black_frame)
