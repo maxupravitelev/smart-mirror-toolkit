@@ -20,8 +20,8 @@ cap.set(4, cap_height)
 # print(frame_height)
 
 
-frame_width = 1024
-frame_height = 768
+frame_width = 640
+frame_height = 480
 
 resize_width_factor = frame_width / cap_width
 resize_heigth_factor = frame_height / cap_height
@@ -63,10 +63,8 @@ while True:
     contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
     contours = sorted(contours, key=lambda x:cv2.contourArea(x), reverse=True)
 
-
-
     for cnt in contours:
-        # if cv2.contourArea(cnt) > 1000:
+        if cv2.contourArea(cnt) > 1000:
             (x, y, w, h) = cv2.boundingRect(cnt)
             radius = int(w / 10)
             brush_x = int(x * resize_width_factor)
@@ -83,7 +81,7 @@ while True:
                 cv2.imwrite(localPath,black_frame)
                 time.sleep(1)
 
-            break
+            # break
 
     cv2.imshow("Frame", black_frame)
     key = cv2.waitKey(1)

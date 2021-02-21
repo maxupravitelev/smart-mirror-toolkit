@@ -52,6 +52,7 @@ frame_height = 768
 
 resize_width_factor = frame_width / cap_width
 resize_heigth_factor = frame_height / cap_height
+reset_factors =  [resize_width_factor, resize_heigth_factor]
 
 black_frame = np.zeros((frame_height, frame_width, 3), np.uint8)
 print(frame_width)
@@ -59,7 +60,6 @@ print(frame_height)
 
 cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
 
-painter = Painter(black_frame).start()
 
 if enable_fps_timer == True:
     timer2 = time.time()
@@ -68,7 +68,6 @@ if enable_fps_timer == True:
 
 reset_area_width = 50
 reset_area_height = 50
-
 save_area_width = 50
 save_area_height = 50
 save_area_y = frame_height - 50
@@ -79,6 +78,9 @@ def reset_canvas():
     cv2.rectangle(black_frame, (0, save_area_y), (save_area_width, save_area_y + save_area_height), (20, 20, 20), -1)
 
 reset_canvas()
+
+painter = Painter(black_frame, reset_factors).start()
+
 
 counter = 0
 
@@ -93,17 +95,13 @@ while True:
 
     painter.frame = frame
 
-    brush_x = int(painter.brush_x * resize_width_factor)
-    brush_y = int(painter.brush_y * resize_heigth_factor)
-    brush_radius = int(painter.brush_radius * resize_width_factor)
+    cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
 
-    cv2.circle(black_frame, (brush_x, brush_y), brush_radius, (255, 255, 255), -1)
-
-    if brush_x < reset_area_width and brush_y < reset_area_height:
+    if painter.brush_x < reset_area_width and painter.brush_y < reset_area_height:
         reset_canvas()
         time.sleep(1)
 
-    if brush_x < save_area_width and brush_y > save_area_y:
+    if painter.brush_x < save_area_width and painter.brush_y > save_area_y:
         counter += 1
         localPath = 'images/image1000'+str(counter)+'.jpg'
         cv2.imwrite(localPath,black_frame)

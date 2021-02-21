@@ -9,7 +9,7 @@ import numpy as np
 from utils.boolcheck import boolcheck
 
 class Painter:
-    def __init__(self, frame):
+    def __init__(self, frame, reset_factors):
         
         # get settings from config file
         config_path = 'config/config.json'
@@ -32,6 +32,9 @@ class Painter:
         self.brush_x = 0
         self.brush_y = 0
         self.brush_radius = 0
+
+        self.resize_width_factor = reset_factors[0]
+        self.resize_heigth_factor = reset_factors[1]
         
     def start(self):    
         Thread(target=self.paint, args=()).start()
@@ -50,9 +53,9 @@ class Painter:
             for cnt in contours:
                 # if cv2.contourArea(cnt) > 1000:
                     (x, y, w, _) = cv2.boundingRect(cnt)
-                    self.brush_x = x
-                    self.brush_y = y
-                    self.brush_radius = int(w / 10)
+                    self.brush_x = int(x * self.resize_width_factor)
+                    self.brush_y = int(y * self.resize_heigth_factor)
+                    self.brush_radius = int((w / 10) * self.resize_width_factor)
 
                     break
 
