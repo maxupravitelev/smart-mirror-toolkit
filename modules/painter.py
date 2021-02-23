@@ -9,7 +9,7 @@ import numpy as np
 from utils.boolcheck import boolcheck
 
 class Painter:
-    def __init__(self, frame, reset_factors):
+    def __init__(self, frame, resize_factors):
         
         # get settings from config file
         config_path = 'config/config.json'
@@ -33,38 +33,48 @@ class Painter:
         self.brush_y = 0
         self.brush_radius = 0
 
-        self.resize_width_factor = reset_factors[0]
-        self.resize_heigth_factor = reset_factors[1]
+        self.resize_width_factor = resize_factors[0]
+        self.resize_heigth_factor = resize_factors[1]
+
+        self.resize_width = 200
         
     def start(self):    
         Thread(target=self.paint, args=()).start()
         return self    
 
     def paint(self):
+        counter = 0
         while not self.stopped:
 
             # Source for color detection: # https://pysource.com/2019/06/05/control-webcam-with-servo-motor-and-raspberry-pi-opencv-with-python/ 
-            hsv_frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
+            resized_frame = imutils.resize(self.frame, self.resize_width)
+
+            hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2HSV)
             red_mask = cv2.inRange(hsv_frame, self.low_red, self.high_red)
 
             contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
             contours = sorted(contours, key=lambda x:cv2.contourArea(x), reverse=True)
+            resized_frame_height = resized_frame.shape[0]
+            resize_factor_height_finding_contours = self.frame.shape[0] / resized_frame_height
+            resize_factor_width_finding_contours = self.frame.shape[1] / self.resize_width 
+            # print(red_mask.shape)
+            # if len(contours ) > 0:
+            #     x, y, w, _ = cv2.boundingRect(contours[0])
+            #     self.brush_x = int(x * self.resize_width_factor)
+            #     self.brush_y = int(y * self.resize_heigth_factor)
+            #     self.brush_radius = int((w / 10) * self.resize_width_factor)
 
-            if len(contours ) > 0:
-                x, y, w, _ = cv2.boundingRect(contours[0])
-                self.brush_x = int(x * self.resize_width_factor)
-                self.brush_y = int(y * self.resize_heigth_factor)
-                self.brush_radius = int((w / 10) * self.resize_width_factor)
+            for cnt in contours:
+                # if cv2.contourArea(cnt) > 1000:
+                    (x, y, w, _) = cv2.boundingRect(cnt)
+                    self.brush_x = int(x * self.resize_width_factor * resize_factor_width_finding_contours)
+                    self.brush_y = int(y * self.resize_heigth_factor * resize_factor_height_finding_contours)
+                    self.brush_radius = int((w / 10) * self.resize_width_factor * resize_factor_width_finding_contours)
 
-            # for cnt in contours:
-            #     # if cv2.contourArea(cnt) > 1000:
-            #         (x, y, w, _) = cv2.boundingRect(cnt)
-            #         self.brush_x = int(x * self.resize_width_factor)
-            #         self.brush_y = int(y * self.resize_heigth_factor)
-            #         self.brush_radius = int((w / 10) * self.resize_width_factor)
+                    break
 
-            #         break
-
+            counter += 1
+            print(counter)
             # if cv2.waitKey(1) == ord("q"):
             #     if self.verbose == True:
             #         print("painter stopped")

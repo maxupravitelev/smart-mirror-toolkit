@@ -9,7 +9,7 @@ import numpy as np
 from utils.boolcheck import boolcheck
 
 class Canvas_painter:
-    def __init__(self, frame, cap_dimensions=[640,480]):
+    def __init__(self, cap_dimensions=[640,480]):
         
         # get settings from config file
         config_path = 'config/config.json'
@@ -42,12 +42,14 @@ class Canvas_painter:
         self.painter_brush_x = 0
         self.painter_brush_y = 0
 
+        self.file_counter = 0
+
         self.reset_canvas()
 
     def reset_canvas(self):
         cv2.rectangle(self.black_frame, (0, 0), (self.frame_width, self.frame_height), (0, 0, 0), -1)
         cv2.rectangle(self.black_frame, (0, 0), (self.reset_area_width, self.reset_area_height), (10, 10, 10), -1)
-        cv2.rectangle(self.black_frame, (0, self.save_area_y), (self.save_area_width, self.save_area_y + self.save_area_height), (20, 20, 20), -1)
+        cv2.rectangle(self.black_frame, (0, self.save_area_y), (self.save_area_width, self.save_area_y + self.save_area_height), (120, 120, 120), -1)
 
             
     def start(self):    
@@ -61,8 +63,8 @@ class Canvas_painter:
                 time.sleep(1)
 
             if self.painter_brush_x < self.save_area_width and self.painter_brush_y > self.save_area_y:
-                counter += 1
-                localPath = 'images/image1000'+str(counter)+'.jpg'
+                self.file_counter += 1
+                localPath = 'images/image1000'+str(self.file_counter)+'.jpg'
                 cv2.imwrite(localPath,self.black_frame)
                 time.sleep(1)
 

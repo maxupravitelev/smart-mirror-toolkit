@@ -44,7 +44,12 @@ else:
 # cap.set(3, cap_width)
 # cap.set(4, cap_height)
 
-cap_dimensions = [480, 320]
+cap_width = cap.stream.get(3)
+cap_height = cap.stream.get(4)
+
+
+cap_dimensions = [cap_width, cap_height]
+
 canvas = Canvas_painter(cap_dimensions).start()
 #canvas.reset_canvas()
 
@@ -57,7 +62,7 @@ time.sleep(1.0)
 
 # resize_width_factor = frame_width / cap_width
 # resize_heigth_factor = frame_height / cap_height
-# reset_factors =  [resize_width_factor, resize_heigth_factor]
+# resize_factors =  [resize_width_factor, resize_heigth_factor]
 
 # black_frame = np.zeros((frame_height, frame_width, 3), np.uint8)
 # print(frame_width)
