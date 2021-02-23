@@ -102,9 +102,10 @@ while True:
 
     painter.frame = frame
 
-    black_frame = canvas.black_frame
+    #black_frame = canvas.black_frame
+    navigation_frame = canvas.navigation_frame
 
-    cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
+    cv2.circle(canvas.black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
 
     canvas.painter_brush_x = painter.brush_x
     canvas.painter_brush_y = painter.brush_y
@@ -113,7 +114,9 @@ while True:
         print("FPS: " + str(1/((timer1-timer2))))
         timer2 = time.time()
 
-    cv2.imshow("Frame", black_frame)
+    combined_frame = cv2.addWeighted(canvas.black_frame,1,navigation_frame,1,0)
+
+    cv2.imshow("Frame", combined_frame)
     key = cv2.waitKey(1)
     
     if key == 27:

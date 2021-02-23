@@ -26,7 +26,7 @@ class Painter:
         self.verbose = boolcheck(config["general_config"]["verbose"])
 
         # red color
-        self.low_red = np.array([161, 155, 84])
+        self.low_red = np.array([161, 100, 84])
         self.high_red = np.array([179, 255, 255])
 
         self.brush_x = 0
@@ -73,8 +73,8 @@ class Painter:
 
                     break
 
-            counter += 1
-            print(counter)
+            # counter += 1
+            # print(counter)
             # if cv2.waitKey(1) == ord("q"):
             #     if self.verbose == True:
             #         print("painter stopped")

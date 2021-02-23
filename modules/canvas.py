@@ -31,7 +31,9 @@ class Canvas_painter:
         self.resize_factors = [self.resize_width_factor, self.resize_heigth_factor]
 
         self.black_frame = np.zeros((self.frame_height, self.frame_width, 3), np.uint8)
-
+        self.navigation_frame = np.zeros((self.frame_height, self.frame_width, 3), np.uint8)
+        self.combined_frame = np.zeros((self.frame_height, self.frame_width, 3), np.uint8)
+        
         self.reset_area_width = 50
         self.reset_area_height = 50
 
@@ -48,8 +50,8 @@ class Canvas_painter:
 
     def reset_canvas(self):
         cv2.rectangle(self.black_frame, (0, 0), (self.frame_width, self.frame_height), (0, 0, 0), -1)
-        cv2.rectangle(self.black_frame, (0, 0), (self.reset_area_width, self.reset_area_height), (10, 10, 10), -1)
-        cv2.rectangle(self.black_frame, (0, self.save_area_y), (self.save_area_width, self.save_area_y + self.save_area_height), (120, 120, 120), -1)
+        cv2.rectangle(self.navigation_frame, (0, 0), (self.reset_area_width, self.reset_area_height), (10, 10, 10), -1)
+        cv2.rectangle(self.navigation_frame, (0, self.save_area_y), (self.save_area_width, self.save_area_y + self.save_area_height), (120, 120, 120), -1)
 
             
     def start(self):    
@@ -68,6 +70,8 @@ class Canvas_painter:
                 cv2.imwrite(localPath,self.black_frame)
                 time.sleep(1)
 
+
+            
 
             # if cv2.waitKey(1) == ord("q"):
             #     if self.verbose == True:
