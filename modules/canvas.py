@@ -1,9 +1,10 @@
 from threading import Thread
 import cv2
-import imutils
 import json
 import time
 import numpy as np
+import os
+import glob
 
 # function to parse bool value from config file
 from utils.boolcheck import boolcheck
@@ -16,6 +17,16 @@ class Canvas_painter:
 
         with open(config_path) as config_file:
             config = json.load(config_file)
+
+        # check if image folder exist, create if it doesn't
+        folder_path = 'images'
+        if not os.path.isdir(folder_path):
+            os.makedirs(folder_path)
+        
+        # count files in folder for creating continuous filenames
+        self.files_in_folder = 0
+        for path in glob.glob(folder_path + "*.jpg"):
+            self.files_in_folder += 1
 
         # init thread handling
         self.stopped = False
@@ -37,9 +48,9 @@ class Canvas_painter:
         self.reset_area_width = 50
         self.reset_area_height = 50
 
-        self.save_area_width = 50
-        self.save_area_height = 50
-        self.save_area_y = self.frame_height - 50
+        self.save_area_width = 100
+        self.save_area_height = 100
+        self.save_area_y = self.frame_height - self.save_area_height
 
         self.painter_brush_x = 0
         self.painter_brush_y = 0
@@ -65,8 +76,8 @@ class Canvas_painter:
                 time.sleep(1)
 
             if self.painter_brush_x < self.save_area_width and self.painter_brush_y > self.save_area_y:
-                self.file_counter += 1
-                localPath = 'images/image1000'+str(self.file_counter)+'.jpg'
+                self.files_in_folder += 1
+                localPath = 'images/image1000'+str(self.files_in_folder+'.jpg')
                 cv2.imwrite(localPath,self.black_frame)
                 time.sleep(1)
 
