@@ -23,8 +23,8 @@ class Canvas_painter:
         # set verbose mode
         self.verbose = boolcheck(config["general_config"]["verbose"])
 
-        self.frame_width = 640
-        self.frame_height = 480
+        self.frame_width = 1024
+        self.frame_height = 768
 
         self.resize_width_factor = self.frame_width / cap_dimensions[0]
         self.resize_heigth_factor = self.frame_height / cap_dimensions[1]
@@ -63,7 +63,7 @@ class Canvas_painter:
             if self.painter_brush_x < self.save_area_width and self.painter_brush_y > self.save_area_y:
                 counter += 1
                 localPath = 'images/image1000'+str(counter)+'.jpg'
-                cv2.imwrite(localPath,black_frame)
+                cv2.imwrite(localPath,self.black_frame)
                 time.sleep(1)
 
 

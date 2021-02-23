@@ -50,14 +50,20 @@ class Painter:
             contours, _ = cv2.findContours(red_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2:]
             contours = sorted(contours, key=lambda x:cv2.contourArea(x), reverse=True)
 
-            for cnt in contours:
-                # if cv2.contourArea(cnt) > 1000:
-                    (x, y, w, _) = cv2.boundingRect(cnt)
-                    self.brush_x = int(x * self.resize_width_factor)
-                    self.brush_y = int(y * self.resize_heigth_factor)
-                    self.brush_radius = int((w / 10) * self.resize_width_factor)
+            if len(contours ) > 0:
+                x, y, w, _ = cv2.boundingRect(contours[0])
+                self.brush_x = int(x * self.resize_width_factor)
+                self.brush_y = int(y * self.resize_heigth_factor)
+                self.brush_radius = int((w / 10) * self.resize_width_factor)
 
-                    break
+            # for cnt in contours:
+            #     # if cv2.contourArea(cnt) > 1000:
+            #         (x, y, w, _) = cv2.boundingRect(cnt)
+            #         self.brush_x = int(x * self.resize_width_factor)
+            #         self.brush_y = int(y * self.resize_heigth_factor)
+            #         self.brush_radius = int((w / 10) * self.resize_width_factor)
+
+            #         break
 
             # if cv2.waitKey(1) == ord("q"):
             #     if self.verbose == True:

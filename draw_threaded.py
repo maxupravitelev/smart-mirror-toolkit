@@ -46,6 +46,7 @@ else:
 
 cap_dimensions = [480, 320]
 canvas = Canvas_painter(cap_dimensions).start()
+#canvas.reset_canvas()
 
 time.sleep(1.0)
 #_, black_frame = cap.read()
@@ -100,8 +101,8 @@ while True:
 
     cv2.circle(black_frame, (painter.brush_x, painter.brush_y), painter.brush_radius, (255, 255, 255), -1)
 
-    # canvas.painter_brush_x = painter.brush_x
-    # canvas.painter_brush_y = painter.brush_y
+    canvas.painter_brush_x = painter.brush_x
+    canvas.painter_brush_y = painter.brush_y
     
     if enable_fps_timer == True:
         print("FPS: " + str(1/((timer1-timer2))))
