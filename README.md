@@ -11,5 +11,10 @@ This package provides different smart mirror applications. All of them work with
 
 ### smart mirror painter
 
-`draw_threaded.py`
+run `python draw_threaded.py`
+
+### smart mirror effects
+
+run `python draw_threaded.py`
+
 
