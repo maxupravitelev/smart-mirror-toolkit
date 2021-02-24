@@ -18,24 +18,29 @@ frame_height = int(cap.get(4))
 print(frame_width)
 print(frame_height)
 
-while True:
-    _, frame = cap.read()
- 
-    frame = cv2.flip(frame, 1)
-
+def trackface(frame):
     cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = face_cascade.detectMultiScale(gray, 1.1, 10)
 
-    #cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
-    #cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
- 
     for (x, y, w, h) in faces:
         cv2.rectangle(black_frame, (x, y), (x+w, y+h), (255, 255, 255), 5)
 
-    cv2.imshow("frame", black_frame)
+    return black_frame
+
+while True:
+    _, frame = cap.read()
+ 
+    frame = cv2.flip(frame, 1)
+
+    frame = trackface(frame)
+
+    #cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
+    #cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+    cv2.imshow("frame", frame)
     key = cv2.waitKey(1)
     
     if key == 27:

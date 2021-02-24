@@ -9,7 +9,7 @@ parser.add_argument("--mode", type=str, default="threshold",
 args = vars(parser.parse_args())
 mode = args["mode"]
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 time.sleep(1)
 
 def show_threshold(frame):

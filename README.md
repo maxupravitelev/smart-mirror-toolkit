@@ -4,7 +4,7 @@
 
 This package provides different smart mirror applications. All of them work with the same hardware setup: 
 - a screen connected to a machine running python
-- a mirror on the screen
+- a two-way mirror on top of the screen
 - 
 
 ## usage
