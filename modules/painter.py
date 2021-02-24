@@ -65,7 +65,7 @@ class Painter:
             #     self.brush_radius = int((w / 10) * self.resize_width_factor)
 
             for cnt in contours:
-                # if cv2.contourArea(cnt) > 1000:
+                if cv2.contourArea(cnt) > 100:
                     (x, y, w, _) = cv2.boundingRect(cnt)
                     self.brush_x = int(x * self.resize_width_factor * resize_factor_width_finding_contours)
                     self.brush_y = int(y * self.resize_heigth_factor * resize_factor_height_finding_contours)

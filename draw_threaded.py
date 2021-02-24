@@ -30,7 +30,7 @@ if camera_mode == "webcam":
     # subprocess.Popen(cmd, shell=True)
     from modules.cam import VideoStream
     time.sleep(2)
-    cap = VideoStream(src=0).start()
+    cap = VideoStream(src=2).start()
 else: 
     from modules.PiCam import PiCam 
     cap = PiCam().start()
@@ -116,12 +116,15 @@ while True:
 
     combined_frame = cv2.addWeighted(canvas.black_frame,1,navigation_frame,1,0)
 
-    cv2.imshow("Frame", combined_frame)
+    # cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
+    # cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+    cv2.imshow("frame", combined_frame)
     key = cv2.waitKey(1)
     
     if key == 27:
         break
     
-cap.release()
+cap.stop()
 cv2.destroyAllWindows()
 

@@ -77,7 +77,7 @@ class Canvas_painter:
 
             if self.painter_brush_x < self.save_area_width and self.painter_brush_y > self.save_area_y:
                 self.files_in_folder += 1
-                localPath = 'images/image1000'+str(self.files_in_folder+'.jpg')
+                localPath = 'images/image1000'+str(self.files_in_folder)+'.jpg'
                 cv2.imwrite(localPath,self.black_frame)
                 time.sleep(1)
 
