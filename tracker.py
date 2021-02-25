@@ -1,11 +1,10 @@
 import cv2
 import numpy as np
 import time
+import argparse
 
 # function to parse bool value from config file
 from utils.boolcheck import boolcheck
-
-import argparse
 
 
 ## parse args from command line
@@ -14,49 +13,57 @@ parser.add_argument("--track", type=str, default="face",
         help="choose tracking mode")
 parser.add_argument("--gpio", type=str, default="False",
         help="enable gpio motor")  
+parser.add_argument("--fullscreen", type=str, default="False",
+        help="enable fullscreen mode") 
 args = vars(parser.parse_args())
+fullscreen = boolcheck(args["fullscreen"])
 track = args["track"]
 gpio = boolcheck(args["gpio"])
 
-cap = cv2.VideoCapture(0)
-time.sleep(1)
-
-print(gpio)
-
+# init motor if set
 if gpio == True:
     from modules.gpio_motor import GPIO_motor
     motor = GPIO_motor()
 
-
+# init capture
 cap = cv2.VideoCapture(0)
+time.sleep(1)
 
 # Set camera resolution
 cap.set(3, 1024)
 cap.set(4, 768)
 
+# load face model
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-_, black_frame = cap.read()
-# cv2.rectangle(black_frame, (0, 0), (1, 1), (255, 0, 0), 2)
+# init frame
+_, canvas = cap.read()
 
 frame_width = int(cap.get(3)) 
 frame_height = int(cap.get(4))
-print(frame_width)
-print(frame_height)
+print("Frame dimensions: " + str((frame_width, frame_height)))
 
+# get middle of the frame for moving the motor left or right according to x coordinates of detected objects
+middle_of_frame_x = int(frame_width / 2)
+
+
+# function for detecting and tracking faces
 def trackface(frame):
-    cv2.rectangle(black_frame, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
+    cv2.rectangle(canvas, (0, 0), (frame_width, frame_height), (0, 0, 0), -1)
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = face_cascade.detectMultiScale(gray, 1.1, 10)
 
+    x = middle_of_frame_x
+
     for (x, y, w, h) in faces:
-        cv2.rectangle(black_frame, (x, y), (x+w, y+h), (255, 255, 255), 5)
+        cv2.rectangle(canvas, (x, y), (x+w, y+h), (255, 255, 255), 5)
 
-    return black_frame
+    return canvas, x
 
 
+# function for detecting and tracking color
 def trackcolor(frame):
     
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -81,20 +88,41 @@ def trackcolor(frame):
             
             break
         
-    return frame
+    return frame, x
 
+
+# function for moving gpio motor on a raspberry pi
+def move_gpio_motor(x):
+    if x < middle_of_frame_x:
+        print("left")
+        motor.move_non_threaded(1, "left")
+        #time.sleep(0.1)
+    elif x == middle_of_frame_x:
+        print("stay")
+    else:
+        print("right")
+        motor.move_non_threaded(1, "right")
+        #time.sleep(0.1)
+
+
+# main loop
 while True:
     _, frame = cap.read()
  
     frame = cv2.flip(frame, 1)
 
     if track == "face":
-        frame = trackface(frame)
+        frame, x = trackface(frame)
     if track == "color":
-        frame = trackcolor(frame)
+        frame, x = trackcolor(frame)
 
-    #cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
-    #cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    if gpio == True:
+        move_gpio_motor(x)
+
+    # enable fullscreen mode
+    if fullscreen == True:
+        cv2.namedWindow('frame', cv2.WINDOW_FREERATIO)
+        cv2.setWindowProperty('frame', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
     cv2.imshow("frame", frame)
     key = cv2.waitKey(1)
